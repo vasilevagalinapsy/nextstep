@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ваш следующий шаг</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --sand:        #F2EDE4;
+  --sand-dark:   #E8E0D3;
+  --sand-deeper: #D6CDBE;
+  --warm-white:  #FAF8F5;
+  --linen:       #EFEAD F;
+
+  --stone:       #8C877E;
+  --stone-light: #B5B0A8;
+  --stone-dark:  #5C5852;
+
+  --sage:        #8FA68A;
+  --sage-light:  #B8CDB4;
+  --sage-deep:   #5C7A56;
+
+  --terra:       #B07060;
+  --terra-light: #CEAD9E;
+  --terra-deep:  #7A4535;
+
+  --ink:         #2C2A27;
+  --ink-soft:    #4A4741;
+  --ink-muted:   #6E6B66;
+
+  --card-bg:     #FFFFFF;
+  --page-bg:     #F5F0E8;
+
+  --shadow-sm:   0 1px 4px rgba(60,50,35,0.07), 0 2px 8px rgba(60,50,35,0.05);
+  --shadow-md:   0 4px 16px rgba(60,50,35,0.10), 0 1px 3px rgba(60,50,35,0.06);
+  --shadow-lg:   0 8px 32px rgba(60,50,35,0.12), 0 2px 6px rgba(60,50,35,0.07);
+
+  --radius:      12px;
+  --radius-sm:   8px;
+  --radius-lg:   18px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Jost', sans-serif;
+  background: var(--page-bg);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 1.25rem 5rem;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Subtle background texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(143,166,138,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 80%, rgba(176,112,96,0.07) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page { position: relative; z-index: 1; width: 100%; max-width: 680px; }
+
+/* ── TOP NAV LINE ── */
+.nav-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2.25rem 0 0;
+  margin-bottom: 3rem;
+}
+.nav-mark {
+  width: 28px; height: 1px;
+  background: var(--stone-light);
+}
+.nav-label {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--stone);
+  font-weight: 400;
+}
+
+/* ── HEADER ── */
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.2;
+  margin-bottom: 0.85rem;
+  letter-spacing: -0.01em;
+}
+.title em {
+  font-style: italic;
+  color: var(--stone-dark);
+}
+.subtitle {
+  font-size: 14px;
+  color: var(--stone);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}
+.header-rule {
+  width: 36px; height: 1px;
+  background: var(--sand-deeper);
+  margin: 1.5rem auto 0;
+}
+
+/* ── INSTRUCTION ── */
+.instruction {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding: 0 1rem;
+}
+.instruction p {
+  font-size: 13.5px;
+  color: var(--ink-muted);
+  line-height: 1.8;
+  font-weight: 300;
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+}
+
+/* ── GRID ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 3rem;
+}
+
+.cell {
+  background: var(--card-bg);
+  border: 1px solid rgba(140,135,126,0.18);
+  border-radius: var(--radius);
+  padding: 20px 16px 18px;
+  cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    transform 0.2s ease,
+    box-shadow 0.25s ease;
+  box-shadow: var(--shadow-sm);
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.cell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.cell:hover {
+  border-color: rgba(140,135,126,0.38);
+  background: #FDFCFA;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.cell.selected {
+  border-color: var(--sage);
+  background: linear-gradient(135deg, #F4F7F3 0%, #EEF3EC 100%);
+  box-shadow: 0 4px 20px rgba(92,122,86,0.14), 0 1px 4px rgba(92,122,86,0.10);
+  transform: translateY(-1px);
+}
+
+.cell.selected .cell-num { color: var(--sage-deep); }
+.cell.selected .cell-name { color: var(--sage-deep); }
+.cell.selected .cell-tag { color: var(--sage); border-color: var(--sage-light); }
+
+/* subtle left accent when selected */
+.cell.selected::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 2px;
+  background: var(--sage);
+  border-radius: 0 2px 2px 0;
+}
+
+.cell-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--stone-light);
+  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+  transition: color 0.25s;
+}
+.cell-name {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  line-height: 1.3;
+  margin-bottom: 5px;
+  letter-spacing: 0.01em;
+  transition: color 0.25s;
+}
+.cell-tag {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 300;
+  color: var(--stone);
+  border: 1px solid var(--sand-deeper);
+  border-radius: 30px;
+  padding: 2px 8px;
+  letter-spacing: 0.03em;
+  transition: color 0.25s, border-color 0.25s;
+}
+
+/* ── RESULT PANEL ── */
+.result-wrap {
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+  margin-bottom: 1rem;
+}
+.result-wrap.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.result-panel {
+  background: var(--card-bg);
+  border: 1px solid rgba(140,135,126,0.20);
+  border-radius: var(--radius-lg);
+  padding: 2rem 2rem 1.75rem;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* warm top strip */
+.result-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--sage-light) 0%, var(--sage) 50%, var(--sand-deeper) 100%);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.result-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 1.25rem;
+}
+.result-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  color: var(--stone);
+  letter-spacing: 0.08em;
+}
+.result-divider-dot {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--sand-deeper);
+  flex-shrink: 0;
+  position: relative;
+  top: -1px;
+}
+.result-category {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sage-deep);
+  font-weight: 500;
+}
+
+.result-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.25;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+.result-section { margin-bottom: 1.25rem; }
+.section-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--stone-light);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.section-body {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.8;
+  font-weight: 300;
+}
+
+.result-rule {
+  height: 1px;
+  background: var(--sand-dark);
+  margin: 1.5rem 0;
+}
+
+.result-step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: var(--sand);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+}
+.step-marker {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--sage-light);
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+}
+.step-marker svg { display: block; }
+.step-content {}
+.step-label {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--sage-deep);
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+.step-text {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* ── RESET ── */
+.reset-area {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.25rem;
+  opacity: 0;
+  transition: opacity 0.4s ease 0.2s;
+}
+.result-wrap.visible .reset-area { opacity: 1; }
+
+.reset-btn {
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--stone);
+  background: transparent;
+  border: 1px solid var(--sand-deeper);
+  border-radius: 30px;
+  padding: 8px 22px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.reset-btn:hover {
+  border-color: var(--stone);
+  color: var(--ink-soft);
+  background: var(--sand);
+}
+
+/* ── FOOTER ── */
+.footer-rule {
+  height: 1px;
+  background: var(--sand-dark);
+  margin: 3rem 0 1.25rem;
+  width: 100%;
+}
+.footer-author {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding-bottom: 0.5rem;
+}
+.footer-name {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--stone-dark);
+  letter-spacing: 0.04em;
+}
+.footer-link {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--sage-deep);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--sage-light);
+  padding-bottom: 1px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.footer-link:hover {
+  color: var(--sage-deep);
+  border-color: var(--sage);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 520px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .title { font-size: 28px; }
+  .result-title { font-size: 22px; }
+  .result-panel { padding: 1.5rem 1.25rem 1.25rem; }
+}
+
+@media (max-width: 340px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav-line">
+    <div class="nav-mark"></div>
+    <span class="nav-label">Инструмент саморефлексии</span>
+    <div class="nav-mark"></div>
+  </nav>
+
+  <header class="header">
+    <h1 class="title">Ваш <em>следующий</em> шаг</h1>
+    <p class="subtitle">Выберите клетку, которая откликается</p>
+    <div class="header-rule"></div>
+  </header>
+
+  <div class="instruction">
+    <p>Не анализируйте. Не ищите «правильный» ответ.<br>
+    Просто остановитесь и почувствуйте — где есть внутренний отклик.</p>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="result-wrap" id="result">
+    <div class="result-panel">
+      <div class="result-meta">
+        <span class="result-number" id="r-num">Клетка 1</span>
+        <div class="result-divider-dot"></div>
+        <span class="result-category" id="r-cat">Позиция</span>
+      </div>
+      <div class="result-title" id="r-title"></div>
+      <div class="result-section">
+        <div class="section-eyebrow">Что означает эта позиция</div>
+        <div class="section-body" id="r-meaning"></div>
+      </div>
+      <div class="result-rule"></div>
+      <div class="result-step">
+        <div class="step-marker">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 5.5L4.2 7.5L8 3" stroke="#5C7A56" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="step-content">
+          <div class="step-label">Следующий шаг</div>
+          <div class="step-text" id="r-step"></div>
+        </div>
+      </div>
+    </div>
+    <div class="reset-area">
+      <button class="reset-btn" onclick="reset()">Выбрать другую клетку</button>
+    </div>
+  </div>
+
+  <div class="footer-rule"></div>
+  <div class="footer-author">
+    <p class="footer-name">Галина Васильева · психолог</p>
+    <a class="footer-link" href="https://vasilevagalina.ru" target="_blank" rel="noopener">vasilevagalina.ru</a>
+    <a class="footer-link" href="tel:+79213807082">+7 921 380 70 82</a>
+  </div>
+
+</div>
+
+<script>
+const data = [
+  { num: 1, name: "Старт",              tag: "начало нового этапа",
+    meaning: "Это этап формирования намерения. Часто здесь появляется ощущение «я больше не могу как раньше» или «что-то пора менять». Вы на границе между старой системой и новой. Иногда есть лёгкий энтузиазм, иногда — тихая тревога, потому что неизвестность уже стала реальностью.",
+    step:    "Не ускорять процесс, а уточнить направление. Важно не «начать всё», а понять, что именно сейчас является приоритетом. Сформулировать намерение — спокойно, без давления." },
+
+  { num: 2, name: "Сомнение",           tag: "много внутренних вопросов",
+    meaning: "Сомнение — это не препятствие, а механизм проверки. Психика оценивает риски, пытается сохранить стабильность. Иногда сомнение появляется там, где вы выходите за пределы привычного сценария. Это может быть признаком роста, а не слабости.",
+    step:    "Разделить факты и интерпретации. Что реально происходит? И что вы об этом думаете? Когда эти уровни разделяются, напряжение обычно снижается." },
+
+  { num: 3, name: "Выбор",              tag: "точка принятия решения",
+    meaning: "Вы на этапе ответственности. Избегание решения уже само становится выбором. Здесь часто возникает внутреннее давление — хочется сделать «идеально правильный» шаг. Но психологически зрелый выбор — это не про идеальность, а про осознанность и принятие последствий.",
+    step:    "Определить свои ценности. Какой вариант больше соответствует тому, кем вы хотите быть? Когда выбор опирается на ценности, он становится устойчивым." },
+
+  { num: 4, name: "Ресурс",             tag: "у вас уже есть опора",
+    meaning: "Это очень важная точка. Она говорит о том, что у вас уже есть опора — внешняя или внутренняя. Иногда люди на этой клетке продолжают искать недостающее и не используют то, что уже доступно. Это может быть опыт, навыки, поддержка, знания, устойчивость.",
+    step:    "Осознать и признать свои ресурсы. Не обесценивать их. И задать себе вопрос: как я могу применить это прямо сейчас?" },
+
+  { num: 5, name: "Рост",               tag: "идёт внутренняя трансформация",
+    meaning: "Это этап внутреннего изменения. Возможно, меняется взгляд на себя, на отношения, на работу или на границы. Рост не всегда ощущается как комфорт — иногда это перестройка идентичности. Вы уже немного не тот человек, которым были раньше.",
+    step:    "Интегрировать изменения. Замечать, что уже стало иначе, и позволить себе действовать в соответствии с этим новым состоянием." },
+
+  { num: 6, name: "Новый уровень",      tag: "ощущение перехода",
+    meaning: "Это переход в более широкий контекст. Старые стратегии могут работать слабее, потому что вы переросли их. Здесь часто появляется ощущение расширения — и одновременно лёгкого волнения.",
+    step:    "Разрешить себе масштабироваться. Не уменьшать свои задачи до прежнего уровня, а позволить себе думать и действовать шире." },
+
+  { num: 7, name: "Точка паузы",        tag: "время остановиться",
+    meaning: "Это не застой, а пауза для переработки опыта. Иногда психике нужно время, чтобы интегрировать происходящее. Здесь важно замедление, чтобы не перегружать систему.",
+    step:    "Упростить текущую нагрузку. Убрать лишнее. Освободить пространство для осмысления." },
+
+  { num: 8, name: "Смена стратегии",    tag: "старый способ не работает",
+    meaning: "Прежний способ действия больше не даёт желаемого результата. Это может вызывать фрустрацию. Но на самом деле это сигнал о необходимости адаптации, а не о личной неэффективности.",
+    step:    "Посмотреть на ситуацию под другим углом. Если бы вы решали эту задачу впервые — как бы вы действовали?" },
+
+  { num: 9, name: "Внутренний конфликт", tag: "разные части хотят разного",
+    meaning: "Внутри могут быть разные потребности: безопасность и свобода, стабильность и развитие, близость и автономия. Конфликт — это не ошибка, а признак того, что разные части личности активны.",
+    step:    "Не выбирать одну сторону силой, а попробовать услышать обе. Часто решение появляется после внутреннего диалога." },
+
+  { num: 10, name: "Восстановление",    tag: "важно вернуть баланс",
+    meaning: "Ресурс снижен. Это может быть следствием длительного напряжения, ответственности или эмоциональной нагрузки. В этой точке важно не требовать от себя продуктивности.",
+    step:    "Вернуть базовые условия устойчивости — отдых, границы, снижение темпа." },
+
+  { num: 11, name: "Расширение",        tag: "выход за привычные рамки",
+    meaning: "Вы готовы к большему. Возможно, меняется самоощущение, появляется ощущение внутренней свободы или новых возможностей.",
+    step:    "Замечать возможности, которые раньше не рассматривались. Расширять рамку мышления." },
+
+  { num: 12, name: "Завершение цикла",  tag: "что-то подходит к финалу",
+    meaning: "Этап естественно подходит к финалу. Завершение важно не только внешне, но и внутренне — через признание опыта. Это момент интеграции.",
+    step:    "Осознанно закрыть процесс: сделать вывод, поблагодарить опыт, отпустить завершённое." }
+];
+
+const grid   = document.getElementById('grid');
+const result = document.getElementById('result');
+let activeCell = null;
+
+data.forEach((d, i) => {
+  const el = document.createElement('div');
+  el.className = 'cell';
+  el.innerHTML =
+    `<div class="cell-num">${String(d.num).padStart(2,'0')}</div>` +
+    `<div class="cell-name">${d.name}</div>` +
+    `<div class="cell-tag">${d.tag}</div>`;
+  el.addEventListener('click', () => pick(d, el));
+  grid.appendChild(el);
+});
+
+function pick(d, el) {
+  if (activeCell) activeCell.classList.remove('selected');
+  el.classList.add('selected');
+  activeCell = el;
+
+  document.getElementById('r-num').textContent   = `Клетка ${d.num}`;
+  document.getElementById('r-cat').textContent   = 'Позиция';
+  document.getElementById('r-title').textContent = d.name;
+  document.getElementById('r-meaning').textContent = d.meaning;
+  document.getElementById('r-step').textContent  = d.step;
+
+  result.classList.add('visible');
+
+  requestAnimationFrame(() => {
+    result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+}
+
+function reset() {
+  if (activeCell) activeCell.classList.remove('selected');
+  activeCell = null;
+  result.classList.remove('visible');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
